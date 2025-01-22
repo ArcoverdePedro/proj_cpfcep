@@ -3,5 +3,5 @@ from .import views
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('validar_cpf/', views.validar_cpf, name='validar_cpf'),
+    path('validarcpf/', views.validarcpf, name='validarcpf'),
 ]
