@@ -174,7 +174,7 @@
                         messagecep.css("color", "red").text("CEP não encontrado ou inexistente!").show(); //exibe a mensagem de cep inválido na div mensagem
                     } else {
                         const menscepforma = "CEP: " + response.cep +"<br>"+ " Logradouro: " + response.logradouro +"<br>"+ " Cidade: " + response.localidade +"<br>"+ " Estado: " + response.uf+ "<br>"; //cria uma nova constante com a mensagem formatada(pula de linha)
-                        messagecep.css("color","black").html(menscepforma).show(); //exibe a mensagem do cep puxada pela api
+                        messagecep.css("color","black").html(menscepforma).show(); //exibe a mensagem do cep puxada pela api com a gambiarra de cima
                         //messagecep.css("color", "black").text("CEP: " + response.cep + " Logradouro " +response.logradouro + " Cidade: " + response.localidade + " Estado: " +response.estado).show();
                     }
                     setTimeout(function() {
