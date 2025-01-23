@@ -67,47 +67,128 @@
     <title class="container">Validação de CPF</title>
 </head>
 <body>
+
     <!--formulário da validação do cpf-->
     <div class="container">
     <form id ="cpfForm"> 
-        <label for="cpf" class="form-label">validar CPF:</label>
+        <label for="cpf" class="form-label" style="font-size: 25px;">validar CPF:</label>
         <br>
-        <input type="text" class="form-control" id="cpf" name="cpf" maxlength="11" required>        
-        <button type="submit" class="btn btn-primary btn-cpf" id="validatecpf">Enviar</button>
+        <input type="text" class="form-control, font-size= 200px;" id="cpf" name="cpf" maxlength="15" required>        
     </form>
-    <div id="responseMessage"></div>
-    </div>    
+    <div id="mensagemcpf"></div>
+    </div>  
+
+    <!--formulário da validação do cep-->
+    <div class="container">
+    <form id ="cepForm"> 
+        <label for="cep" class="form-label" style="font-size: 25px;">Buscar CEP:</label>
+        <br>
+        <input type="text" class="form-control, font-size= 200px;" id="cep" name="cep" maxlength="10" required>        
+        <button type="submit" class="btn btn-primary btn-cep">Enviar</button>
+    </form>
+    <div id="mensagemcep"></div>
+    <br>
+    </div>
     
 
     <script>
         //função para validar o cpf, dentro do form
-        $("#cpfForm").submit(function(event) { //quando o form for submetido
+        /*$("#cpfForm").submit(function(event) { //quando o form for submetido
             event.preventDefault();             //previne o comportamento padrão do form
             const cpf = $("#cpf").val();        //pega o valor do input cpf
-            //requisição ajax para validar o cpf
-            $.ajax({
-                url: "/validarcpf/",  //url da view que valida o cpf
-                type: "POST",         //método POST
-                data: {                //dados que serão enviados
-                    cpf: cpf,
-                },
-                success: function(response) { 
-                    const messageDiv = $("#responseMessage");//se a requisição for bem sucedida, exibe a mensagem de cpf válido, se não, exibe a mensagem de cpf inválido
-                    if (response.status === "ok") {
-                        messageDiv.css("color", "green").text("CPF válido!").show(); //exibe a mensagem de cpf válido na div responseMessage
-                    } else {
-                        messageDiv.css("color", "red").text("CPF inválido.").show();
+              
+                //requisição ajax para validar o cpf
+                $.ajax({
+                    url: "/validarcpf/",  //url da view que valida o cpf
+                    type: "POST",         //método POST
+                    data: {                //dados que serão enviados
+                        cpf: cpf,
+                    },
+                    success: function(responsecpf) { 
+                        const messagecpf = $("#mensagemcpf");//se a requisição for bem sucedida, exibe a mensagem de cpf válido, se não, exibe a mensagem de cpf inválido
+                        if (responsecpf.status === "ok") {
+                            messagecpf.css("color", "green").text("CPF válido!").show(); //exibe a mensagem de cpf válido na div mensagem
+                        } else {
+                            messagecpf.css("color", "red").text("CPF inválido.").show();
+                        }
+                        setTimeout(function() { //esconde a mensagem após 1,5 segundos
+                            messagecpf.hide();
+                            }, 1500);         
+                    },
+                    //se a requisição falhar, exibe a mensagem de erro
+                    error: function() {
+                        const messagecpf = $("#mensagemcpf");
+                        messagecpf.css("color", "red").text("Erro ao validar CPF. Tente novamente.");
                     }
-                    setTimeout(function() { //esconde a mensagem após 1,5 segundos
-                        messageDiv.hide();
-                        }, 1500);         
-                },
-                //se a requisição falhar, exibe a mensagem de erro
-                error: function() {
-                    const messageDiv = $("#responseMessage");
-                    messageDiv.css("color", "red").text("Erro ao validar CPF. Tente novamente.");
-                }
+                });
+            
+            
+        });*/
+        $("#cpf").blur(function() { //quando o input cpf perder o foco ele vai fazer a mesma operação de como se tivesse um botão de submit, mas sem precisar clicar
+            $("#cpfForm").submit(function(event) {
+                event.preventDefault();
+                const cpf = $("#cpf").val();
+                //requisição ajax para validar o cpf
+            $.ajax({
+                    url: "/validarcpf/",  //url da view que valida o cpf
+                    type: "POST",         //método POST
+                    data: {                //dados que serão enviados
+                        cpf: cpf,
+                    },
+                    success: function(responsecpf) { 
+                        const messagecpf = $("#mensagemcpf");//se a requisição for bem sucedida, exibe a mensagem de cpf válido, se não, exibe a mensagem de cpf inválido
+                        if (responsecpf.status === "ok") {
+                            messagecpf.css("color", "green").text("CPF válido!").show(); //exibe a mensagem de cpf válido na div mensagem
+                        } else {
+                            messagecpf.css("color", "red").text("CPF inválido.").show();
+                        }
+                        setTimeout(function() { //esconde a mensagem após 1,5 segundos
+                            messagecpf.hide();
+                            }, 1500);         
+                    },
+                    //se a requisição falhar, exibe a mensagem de erro
+                    error: function() {
+                        const messagecpf = $("#mensagemcpf");
+                        messagecpf.css("color", "red").text("Erro ao validar CPF. Tente novamente.");
+                    }
+                });
             });
+            $("#cpfForm").submit();
+
+            
+        });
+
+        $("#cepForm").submit(function(event) {
+            event.preventDefault();
+            const cep = $("#cep").val();
+            //requisição ajax para buscar o cep na api puxada na views.py
+            $.ajax({
+                url: "/buscarcep/",
+                type: "POST",
+                data: {
+                    cep: cep,
+                },
+                success: function(response) {
+                    const messagecep = $("#mensagemcep");
+                    if (response.erro === "true") { //se o cep não for encontrado, exibe a mensagem de cep não encontrado (seguindo a logica do json da api)
+                        messagecep.css("color", "red").text("CEP não encontrado ou inexistente!").show(); //exibe a mensagem de cep inválido na div mensagem
+                    } else {
+                        const menscepforma = "CEP: " + response.cep +"<br>"+ " Logradouro: " + response.logradouro +"<br>"+ " Cidade: " + response.localidade +"<br>"+ " Estado: " + response.uf+ "<br>"; //cria uma nova constante com a mensagem formatada(pula de linha)
+                        messagecep.css("color","black").html(menscepforma).show(); //exibe a mensagem do cep puxada pela api
+                        //messagecep.css("color", "black").text("CEP: " + response.cep + " Logradouro " +response.logradouro + " Cidade: " + response.localidade + " Estado: " +response.estado).show();
+                    }
+                    setTimeout(function() {
+                        messagecep.hide();
+                        }, 3000);         
+                },
+                error: function() {
+                    const messagecep = $("#mensagemcep");
+                    messagecep.css("color", "red").text("deu ruim");
+                }
+
+            })
+
+
         });
     </script>
 </body>
